@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Financial Planner</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3f4f6;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    header {
+        background: #0f172a;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .container {
+        max-width: 900px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        color: #0f172a;
+        margin-top: 20px;
+    }
+
+    .section {
+        margin-bottom: 25px;
+        padding: 15px;
+        border-left: 4px solid #0f172a;
+        background: #f8fafc;
+        border-radius: 6px;
+    }
+
+    input, textarea {
+        width: 100%;
+        padding: 10px;
+        margin-top: 8px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    button {
+        margin-top: 10px;
+        padding: 12px 20px;
+        background: #0f172a;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #1e293b;
+    }
+
+    .check-item {
+        margin: 6px 0;
+        display: flex;
+        gap: 10px;
+    }
+</style>
+</head>
+
+<body>
+
+<header>📘 Emergency Financial Planner — Organizador Financeiro de Emergência</header>
+
+<div class="container">
+
+    <h2>1. Planejamento de Emergência — Dados do Usuário</h2>
+    <div class="section">
+        <label>📍 Nome Completo</label>
+        <input id="nome">
+
+        <label>📍 Contato de Emergência</label>
+        <input id="contato">
+
+        <label>📍 Observações Importantes</label>
+        <textarea id="obs"></textarea>
+    </div>
+
+    <h2>2. Plano de Ação — Perda de Renda</h2>
+    <div class="section">
+        <div class="check-item"><input type="checkbox"> Reduzir gastos não essenciais imediatamente</div>
+        <div class="check-item"><input type="checkbox"> Fazer lista de dívidas e renegociar prazos</div>
+        <div class="check-item"><input type="checkbox"> Separar reserva mínima para 30 dias</div>
+        <div class="check-item"><input type="checkbox"> Estabelecer plano de renda extra rápida</div>
+        <div class="check-item"><input type="checkbox"> Criar plano de realocação profissional</div>
+    </div>
+
+    <h2>3. Simulador de Sobrevivência Financeira</h2>
+    <div class="section">
+        <label>💰 Gastos Mensais</label>
+        <input id="gastos" type="number">
+
+        <label>💵 Dinheiro Disponível</label>
+        <input id="dinheiro" type="number">
+
+        <button onclick="calcular()">Calcular Dias de Sobrevivência</button>
+
+        <p id="resultado" style="margin-top:10px; font-weight:bold;"></p>
+    </div>
+
+    <h2>4. Documentos Essenciais</h2>
+    <div class="section">
+        <div class="check-item"><input type="checkbox"> RG e CPF</div>
+        <div class="check-item"><input type="checkbox"> Comprovantes de residência</div>
+        <div class="check-item"><input type="checkbox"> Senhas e acessos organizados</div>
+        <div class="check-item"><input type="checkbox"> Contratos importantes</div>
+        <div class="check-item"><input type="checkbox"> Contatos médicos</div>
+    </div>
+
+    <button onclick="gerarPDF()">📄 Gerar PDF Completo</button>
+
+</div>
+
+<script>
+function calcular(){
+    const g = Number(document.getElementById('gastos').value);
+    const d = Number(document.getElementById('dinheiro').value);
+
+    if(g <= 0 || d <= 0) {
+        document.getElementById('resultado').innerText = "Preencha valores válidos.";
+        return;
+    }
+
+    const dias = Math.floor((d / g) * 30);
+    document.getElementById('resultado').innerText = "⏳ Você consegue sobreviver financeiramente por: " + dias + " dias.";
+}
+
+function gerarPDF(){
+    window.print();
+}
+</script>
+
+</body>
+</html>

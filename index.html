@@ -2,149 +2,463 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Emergency Financial Planner</title>
+<title>Painel Atendimento Telefônico</title>
+
+<script src="https://api.backendless.com/sdk/js/latest/backendless.min.js"></script>
+<script>
+Backendless.initApp(
+  "16519BB0-2CC5-4D6D-A7C8-CC9B9D69F91B",
+  "FD19561E-7DE2-4E6B-AA75-2C846AF62F87"
+);
+</script>
 
 <style>
-    body {
-        font-family: Arial, sans-serif;
-        background: #f3f4f6;
-        margin: 0;
-        padding: 0;
-        color: #333;
-    }
+*{
+  box-sizing:border-box;
+  font-family:Arial
+}
 
-    header {
-        background: #0f172a;
-        color: #fff;
-        padding: 20px;
-        text-align: center;
-        font-size: 22px;
-        font-weight: bold;
-    }
+body{
+  margin:0;
+  background:#f4f6f8;
+  color:#0f172a;
+}
 
-    .container {
-        max-width: 900px;
-        margin: 30px auto;
-        background: #fff;
-        padding: 25px;
-        border-radius: 8px;
-        box-shadow: 0 0 15px rgba(0,0,0,0.1);
-    }
+/* ===== HEADER ===== */
+header{
+  background:#001e36;
+  color:#ffffff;
+  padding:15px;
+  text-align:center;
+  font-size:20px;
+  font-weight:bold;
+  position:relative
+}
 
-    h2 {
-        color: #0f172a;
-        margin-top: 20px;
-    }
+.admin-btn{
+  position:absolute;
+  right:20px;
+  top:12px;
+  background:#0b3c5d;
+  color:#ffffff;
+  border:none;
+  padding:8px 14px;
+  border-radius:8px;
+  cursor:pointer
+}
 
-    .section {
-        margin-bottom: 25px;
-        padding: 15px;
-        border-left: 4px solid #0f172a;
-        background: #f8fafc;
-        border-radius: 6px;
-    }
+/* ===== ADMIN PANEL ===== */
+.admin-panel{
+  position:fixed;
+  top:60px;
+  right:20px;
+  width:360px;
+  background:#ffffff;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.15);
+  display:none;
+  z-index:999
+}
 
-    input, textarea {
-        width: 100%;
-        padding: 10px;
-        margin-top: 8px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-    }
+.admin-panel h2{
+  margin-top:0;
+  color:#001e36
+}
 
-    button {
-        margin-top: 10px;
-        padding: 12px 20px;
-        background: #0f172a;
-        color: #fff;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    }
+.admin-panel button.close{
+  background:#b91c1c;
+  color:#ffffff;
+  width:100%;
+  margin-top:10px
+}
 
-    button:hover {
-        background: #1e293b;
-    }
+/* ===== CONTAINER ===== */
+.container{
+  max-width:1300px;
+  margin:20px auto;
+  padding:20px
+}
 
-    .check-item {
-        margin: 6px 0;
-        display: flex;
-        gap: 10px;
-    }
+.card{
+  background:#ffffff;
+  padding:20px;
+  border-radius:14px;
+  margin-bottom:20px;
+  box-shadow:0 6px 18px rgba(0,0,0,.08)
+}
+
+h2{
+  margin-top:0;
+  color:#001e36
+}
+
+input,select,button{
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #cbd5e1
+}
+
+button{
+  cursor:pointer;
+  font-weight:bold
+}
+
+/* ===== PAUSAS ===== */
+.pause-buttons{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px
+}
+
+.pause-buttons button{
+  background:#e5e7eb;
+  color:#001e36
+}
+
+.pause-buttons button:hover{
+  background:#cbd5e1
+}
+
+/* ===== ADMIN CARD ===== */
+.adm{
+  border:2px dashed #001e36
+}
+
+/* ===== GRID ===== */
+.grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px
+}
+
+/* ===== TABLE ===== */
+table{
+  width:100%;
+  border-collapse:collapse
+}
+
+th,td{
+  border:1px solid #e5e7eb;
+  padding:8px;
+  text-align:center
+}
+
+th{
+  background:#eef2f6;
+  color:#001e36
+}
+
+/* ===== STATUS ===== */
+.status{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  font-weight:bold
+}
+
+.bolinha{
+  width:10px;
+  height:10px;
+  border-radius:50%
+}
+
+.verde{
+  background:#16a34a;
+  color:#14532d
+}
+
+.vermelho{
+  background:#dc2626;
+  color:#7f1d1d
+}
+
+/* ===== BADGES ===== */
+.badge{
+  padding:3px 8px;
+  border-radius:10px;
+  font-size:12px;
+  font-weight:bold
+}
+
+.chat{
+  background:#e0f2fe;
+  color:#075985
+}
+
+.telefone{
+  background:#e5e7eb;
+  color:#001e36
+}
+
+/* ===== LISTA ANALISTAS ===== */
+.lista-analistas{
+  margin-top:15px
+}
+
+.lista-analistas div{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:6px
+}
+
+.lista-analistas button{
+  padding:4px 8px;
+  font-size:12px
+}
 </style>
 </head>
 
 <body>
 
-<header>📘 Emergency Financial Planner — Organizador Financeiro de Emergência</header>
+<header>
+📞 Painel de Atendimento
+<button class="admin-btn" onclick="toggleAdmin()">🛠️ Admin</button>
+</header>
+
+<div class="admin-panel" id="adminPanel">
+<h2>👤 Cadastro do Analista</h2>
+
+<input id="analistaNome" placeholder="Nome do Analista"><br><br>
+
+<select id="analistaCanal">
+<option value="">Canal</option>
+<option value="Telefone">📞 Telefone</option>
+<option value="Chat">💬 Chat</option>
+</select><br><br>
+
+<button onclick="cadastrarAnalista()">Salvar</button>
+
+<div class="lista-analistas" id="listaAnalistas"></div>
+
+<button class="close" onclick="toggleAdmin()">Fechar</button>
+</div>
 
 <div class="container">
 
-    <h2>1. Planejamento de Emergência — Dados do Usuário</h2>
-    <div class="section">
-        <label>📍 Nome Completo</label>
-        <input id="nome">
+<div class="card">
+<h2>⏸️ Controle de Pausas</h2>
 
-        <label>📍 Contato de Emergência</label>
-        <input id="contato">
+<select id="selectAnalista">
+<option value="">Selecione o analista</option>
+</select><br><br>
 
-        <label>📍 Observações Importantes</label>
-        <textarea id="obs"></textarea>
-    </div>
+<div class="pause-buttons">
+<button onclick="iniciarPausa('Almoço')">🍽️ Almoço</button>
+<button onclick="iniciarPausa('Reunião')">👥 Reunião</button>
+<button onclick="iniciarPausa('Lanche')">☕ Lanche</button>
+<button onclick="iniciarPausa('Banheiro')">🚻 Banheiro</button>
+<button onclick="iniciarPausa('Livre')">⏳ Livre</button>
+</div>
 
-    <h2>2. Plano de Ação — Perda de Renda</h2>
-    <div class="section">
-        <div class="check-item"><input type="checkbox"> Reduzir gastos não essenciais imediatamente</div>
-        <div class="check-item"><input type="checkbox"> Fazer lista de dívidas e renegociar prazos</div>
-        <div class="check-item"><input type="checkbox"> Separar reserva mínima para 30 dias</div>
-        <div class="check-item"><input type="checkbox"> Estabelecer plano de renda extra rápida</div>
-        <div class="check-item"><input type="checkbox"> Criar plano de realocação profissional</div>
-    </div>
+<button onclick="finalizarPausa()" style="margin-top:15px;background:#b91c1c;color:#fff">
+Finalizar Pausa
+</button>
+</div>
 
-    <h2>3. Simulador de Sobrevivência Financeira</h2>
-    <div class="section">
-        <label>💰 Gastos Mensais</label>
-        <input id="gastos" type="number">
+<div class="grid">
 
-        <label>💵 Dinheiro Disponível</label>
-        <input id="dinheiro" type="number">
+<div class="card">
+<h2>📞 Fila Telefone</h2>
+<table>
+<thead>
+<tr><th>Analista</th><th>Pausa</th><th>Tempo</th></tr>
+</thead>
+<tbody id="filaTelefone"></tbody>
+</table>
+</div>
 
-        <button onclick="calcular()">Calcular Dias de Sobrevivência</button>
+<div class="card">
+<h2>💬 Fila Chat</h2>
+<table>
+<thead>
+<tr><th>Analista</th><th>Pausa</th><th>Tempo</th></tr>
+</thead>
+<tbody id="filaChat"></tbody>
+</table>
+</div>
 
-        <p id="resultado" style="margin-top:10px; font-weight:bold;"></p>
-    </div>
+</div>
 
-    <h2>4. Documentos Essenciais</h2>
-    <div class="section">
-        <div class="check-item"><input type="checkbox"> RG e CPF</div>
-        <div class="check-item"><input type="checkbox"> Comprovantes de residência</div>
-        <div class="check-item"><input type="checkbox"> Senhas e acessos organizados</div>
-        <div class="check-item"><input type="checkbox"> Contratos importantes</div>
-        <div class="check-item"><input type="checkbox"> Contatos médicos</div>
-    </div>
-
-    <button onclick="gerarPDF()">📄 Gerar PDF Completo</button>
+<div class="card adm">
+<h2>🛠️ Painel Administrativo (Tempo Real)</h2>
+<table>
+<thead>
+<tr>
+<th>Analista</th>
+<th>Canal</th>
+<th>Pausa Atual</th>
+<th>Tempo Atual</th>
+<th>Total Pausas</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="adminTabela"></tbody>
+</table>
+</div>
 
 </div>
 
 <script>
-function calcular(){
-    const g = Number(document.getElementById('gastos').value);
-    const d = Number(document.getElementById('dinheiro').value);
+/* ===== JS ORIGINAL MANTIDO SEM ALTERAÇÕES ===== */
+function dataHoje(){
+  const d=new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
 
-    if(g <= 0 || d <= 0) {
-        document.getElementById('resultado').innerText = "Preencha valores válidos.";
-        return;
+const analistas={}, pausasAtivas={}, totalTempoAnalista={};
+let estadoId=null;
+let editando=null;
+
+function toggleAdmin(){
+  adminPanel.style.display=adminPanel.style.display==="block"?"none":"block";
+}
+
+function cadastrarAnalista(){
+  if(!analistaNome.value||!analistaCanal.value) return alert("Informe nome e canal");
+
+  if(editando && editando!==analistaNome.value){
+    analistas[analistaNome.value]=analistaCanal.value;
+    delete analistas[editando];
+    delete pausasAtivas[editando];
+    delete totalTempoAnalista[editando];
+  }else{
+    analistas[analistaNome.value]=analistaCanal.value;
+  }
+
+  editando=null;
+  analistaNome.value="";
+  analistaCanal.value="";
+
+  atualizarSelectAnalistas();
+  atualizarListaAdmin();
+  atualizarTudo();
+  salvarEstado();
+}
+
+function editarAnalista(nome){
+  analistaNome.value=nome;
+  analistaCanal.value=analistas[nome];
+  editando=nome;
+}
+
+function excluirAnalista(nome){
+  if(!confirm("Deseja excluir o analista?")) return;
+  delete analistas[nome];
+  delete pausasAtivas[nome];
+  delete totalTempoAnalista[nome];
+  atualizarSelectAnalistas();
+  atualizarListaAdmin();
+  atualizarTudo();
+  salvarEstado();
+}
+
+function atualizarListaAdmin(){
+  listaAnalistas.innerHTML="";
+  Object.keys(analistas).forEach(n=>{
+    listaAnalistas.innerHTML+=`
+      <div>
+        <strong>${n}</strong>
+        <span>
+          <button onclick="editarAnalista('${n}')">✏️</button>
+          <button onclick="excluirAnalista('${n}')" style="background:#b91c1c;color:#fff">🗑️</button>
+        </span>
+      </div>`;
+  });
+}
+
+function atualizarSelectAnalistas(){
+  selectAnalista.innerHTML=`<option value="">Selecione o analista</option>`;
+  Object.keys(analistas).forEach(n=>{
+    selectAnalista.innerHTML+=`<option value="${n}">${n}</option>`;
+  });
+}
+
+function iniciarPausa(tipo){
+  const nome=selectAnalista.value;
+  if(!nome) return alert("Selecione o analista");
+  if(pausasAtivas[nome]) return alert("Já está em pausa");
+  pausasAtivas[nome]={ tipo, inicio: Date.now() };
+  atualizarTudo();
+  salvarEstado();
+}
+
+function finalizarPausa(){
+  const nome=selectAnalista.value;
+  if(!pausasAtivas[nome]) return alert("Analista não está em pausa");
+  const p=pausasAtivas[nome];
+  const duracao=Math.floor((Date.now()-p.inicio)/1000);
+  totalTempoAnalista[nome]=(totalTempoAnalista[nome]||0)+duracao;
+  delete pausasAtivas[nome];
+  atualizarTudo();
+  salvarEstado();
+}
+
+function atualizarTudo(){
+  adminTabela.innerHTML="";
+  filaTelefone.innerHTML="";
+  filaChat.innerHTML="";
+
+  Object.keys(analistas).forEach(nome=>{
+    const canal=analistas[nome];
+    const ativo=pausasAtivas[nome];
+    const tempoAtual=ativo?Math.floor((Date.now()-ativo.inicio)/1000):0;
+
+    if(ativo){
+      const linha=`<tr><td>${nome}</td><td>${ativo.tipo}</td><td>${formatarMinSec(tempoAtual)}</td></tr>`;
+      canal==="Telefone"?filaTelefone.innerHTML+=linha:filaChat.innerHTML+=linha;
     }
 
-    const dias = Math.floor((d / g) * 30);
-    document.getElementById('resultado').innerText = "⏳ Você consegue sobreviver financeiramente por: " + dias + " dias.";
+    adminTabela.innerHTML+=`
+      <tr>
+        <td>${nome}</td>
+        <td><span class="badge ${canal.toLowerCase()}">${canal}</span></td>
+        <td>${ativo?ativo.tipo:"-"}</td>
+        <td>${ativo?formatarMinSec(tempoAtual):"-"}</td>
+        <td><strong>${formatarHora(totalTempoAnalista[nome]||0)}</strong></td>
+        <td class="status ${ativo?"vermelho":"verde"}">
+          <span class="bolinha ${ativo?"vermelho":"verde"}"></span>
+          ${ativo?"Em pausa":"Disponível"}
+        </td>
+      </tr>`;
+  });
 }
 
-function gerarPDF(){
-    window.print();
+setInterval(atualizarTudo,1000);
+
+function formatarMinSec(s){
+  return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
 }
+
+function formatarHora(s){
+  return String(Math.floor(s/3600)).padStart(2,"0")+":"+String(Math.floor((s%3600)/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+}
+
+function salvarEstado(){
+  const estado={analistas,totalTempoAnalista,pausasAtivas,dataControle:dataHoje()};
+  const data={estado:JSON.stringify(estado)};
+  if(estadoId) data.objectId=estadoId;
+  Backendless.Data.of("PainelEstado").save(data).then(r=>estadoId=r.objectId);
+}
+
+function carregarEstado(){
+  Backendless.Data.of("PainelEstado").find().then(r=>{
+    if(!r.length) return;
+    estadoId=r[0].objectId;
+    const d=JSON.parse(r[0].estado);
+    Object.assign(analistas,d.analistas||{});
+    Object.assign(totalTempoAnalista,d.totalTempoAnalista||{});
+    Object.assign(pausasAtivas,d.pausasAtivas||{});
+    atualizarSelectAnalistas();
+    atualizarListaAdmin();
+    atualizarTudo();
+  });
+}
+
+carregarEstado();
 </script>
 
 </body>

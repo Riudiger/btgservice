@@ -431,9 +431,12 @@ function salvarEstado(){
   const estado={analistas,totalTempoAnalista,pausasAtivas,aderenciaAnalista,dataControle:dataHoje()};
   const data={estado:JSON.stringify(estado)};
   if(estadoId) data.objectId=estadoId;
-  Backendless.Data.of("PainelEstado").save(data).then(r=>estadoId=r.objectId);
+  Backendless.Data.of("PainelEstado").save(data).then(r=>{
+    estadoId=r.objectId;
+  });
 }
 
+// Carrega o estado inicial
 function carregarEstado(){
   Backendless.Data.of("PainelEstado").find().then(r=>{
     if(!r.length) return;
@@ -450,6 +453,23 @@ function carregarEstado(){
 }
 
 carregarEstado();
+
+// ====== Realtime Backendless ======
+Backendless.Data.of("PainelEstado").RT().subscribe(
+  Backendless.Data.SubscriptionMode.UPDATE,
+  function(update){
+    if(update.object.estado){
+      const d=JSON.parse(update.object.estado);
+      Object.assign(analistas,d.analistas||{});
+      Object.assign(totalTempoAnalista,d.totalTempoAnalista||{});
+      Object.assign(pausasAtivas,d.pausasAtivas||{});
+      Object.assign(aderenciaAnalista,d.aderenciaAnalista||{});
+      atualizarSelectAnalistas();
+      atualizarListaAdmin();
+      atualizarTudo();
+    }
+  }
+);
 </script>
 
 </body>

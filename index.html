@@ -1,5 +1,6 @@
 
 
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -96,7 +97,14 @@ th{ background:#eef2f6; color:#001e36 }
 <select id="ausTipo">
   <option value="Atestado">📄 Atestado</option>
   <option value="Férias">🏖️ Férias</option>
-</select><br><br>
+  <option value="Folga">🛌 Folga</option>
+  <option value="Licença">🧾 Licença</option>
+  <option value="Banco de Horas">⏱️ Banco de Horas</option>
+  <option value="Treinamento">📘 Treinamento</option>
+  <option value="Reunião Externa">👥 Reunião Externa</option>
+  <option value="Outros">❓ Outros</option>
+</select>
+<br><br>
 
 <input type="date" id="ausData"><br><br>
 
@@ -116,6 +124,8 @@ th{ background:#eef2f6; color:#001e36 }
   <th>Data</th>
   <th>Horário</th>
   <th>Motivo</th>
+<th>Ações</th>
+
 </tr>
 </thead>
 <tbody id="listaAusencias"></tbody>
@@ -233,6 +243,7 @@ Finalizar Pausa
 </div>
 
 <script>
+let ausenciaEditando = null;
 const analistas = {};
 
 function toggleAdmin(){ adminPanel.style.display = adminPanel.style.display==="block"?"none":"block"; }
@@ -404,20 +415,40 @@ function salvarAusencia(){
   if(!ausAnalista.value || !ausData.value)
     return alert("Preencha analista e data");
 
-  Backendless.Data.of("Ausencias").save({
+  const dados = {
     analista: ausAnalista.value,
     tipo: ausTipo.value,
     data: ausData.value,
     inicio: ausInicio.value,
     fim: ausFim.value,
     motivo: ausMotivo.value
-  }).then(()=>{
-    listarAusencias();
-    ausMotivo.value="";
-    ausInicio.value="";
-    ausFim.value="";
-  });
+  };
+
+  // EDITAR
+  if(ausenciaEditando){
+    dados.objectId = ausenciaEditando;
+    Backendless.Data.of("Ausencias").save(dados).then(()=>{
+      ausenciaEditando = null;
+      limparFormularioAusencias();
+      listarAusencias();
+    });
+  }
+  // NOVO
+  else{
+    Backendless.Data.of("Ausencias").save(dados).then(()=>{
+      limparFormularioAusencias();
+      listarAusencias();
+    });
+  }
 }
+function limparFormularioAusencias(){
+  ausMotivo.value="";
+  ausInicio.value="";
+  ausFim.value="";
+  ausData.value="";
+  ausenciaEditando = null;
+}
+
 
 function listarAusencias(){
   Backendless.Data.of("Ausencias").find().then(res=>{
@@ -430,10 +461,15 @@ function listarAusencias(){
         <td>${a.data}</td>
         <td>${a.inicio||"-"} - ${a.fim||"-"}</td>
         <td>${a.motivo||"-"}</td>
+        <td>
+          <button onclick="editarAusencia('${a.objectId}')">🖊️</button>
+          <button onclick="excluirAusencia('${a.objectId}')" style="background:#dc2626;color:#fff">🗑️</button>
+        </td>
       </tr>`;
     });
   });
 }
+
 
 function exportarAusencias(){
   Backendless.Data.of("Ausencias").find().then(res=>{
@@ -447,6 +483,24 @@ function exportarAusencias(){
     link.download="ausencias.csv";
     link.click();
   });
+}
+function editarAusencia(id){
+  Backendless.Data.of("Ausencias").findById(id).then(a=>{
+    ausAnalista.value = a.analista;
+    ausTipo.value = a.tipo;
+    ausData.value = a.data;
+    ausInicio.value = a.inicio;
+    ausFim.value = a.fim;
+    ausMotivo.value = a.motivo;
+    ausenciaEditando = a.objectId;
+  });
+}
+
+function excluirAusencia(id){
+  if(confirm("Deseja excluir esta ausência?")){
+    Backendless.Data.of("Ausencias").remove({objectId:id})
+      .then(()=>listarAusencias());
+  }
 }
 
 </script>
